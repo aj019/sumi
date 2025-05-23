@@ -2,6 +2,9 @@
 
 This Chrome extension allows you to select any text on a webpage and summarize it using OpenAI's API. It provides a simple and modern UI for entering your OpenAI API key and viewing the generated summary.
 
+# Demo
+https://github.com/user-attachments/assets/e0dfd8ec-920d-421f-83cd-63f9216250b0
+
 ## Features
 
 - **Text Selection**: Select any text on a webpage and click the extension icon to view it in the popup.
