@@ -3,31 +3,34 @@
 <head>
   <title>Text Summarizer</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Text Summarizer</h1>
-    
-    <div class="settings-section">
-      <h2>Settings</h2>
-      <div class="input-group">
-        <label for="apiKey">OpenAI API Key:</label>
-        <input type="password" id="apiKey" placeholder="Enter your OpenAI API key">
-        <button id="saveApiKey">Save</button>
-      </div>
-    </div>
-
-    <div class="summary-section">
-      <h2>Summary</h2>
-      <div id="selectedText" class="selected-text">
-        <p>Select text on any webpage and click the extension icon to summarize it.</p>
-      </div>
-      <div id="summaryResult" class="summary-result"></div>
-      <button id="summarizeBtn" class="primary-button">Summarize</button>
-    </div>
-
-    <div id="status" class="status"></div>
+  <div class="top-bar">
+    <span class="title">SUMI</span>
+    <button id="settingsBtn" class="icon-btn" title="Settings">
+      <i class="fa-solid fa-gear"></i>
+    </button>
   </div>
+
+  <div id="homePage">
+    <div class="info-box" id="infoBox">Select text on any webpage and click the extension icon to summarize it.</div>
+    <div id="selectedTextBox" class="selected-text-box" style="display:none;"></div>
+    <button id="summarizeBtn" class="primary-button" style="display:none;">Summarize</button>
+    <div id="summaryResult" class="summary-result" style="display:none;"></div>
+  </div>
+
+  <div id="settingsPage" class="settings-page" style="display:none;">
+    <h2>Settings</h2>
+    <div class="input-group">
+      <label for="apiKey">OpenAI API Key:</label>
+      <input type="password" id="apiKey" placeholder="Enter your OpenAI API key">
+      <button id="saveApiKey" class="primary-button">Save</button>
+    </div>
+    <button id="backBtn" class="secondary-button">Back</button>
+  </div>
+
+  <div id="status" class="status"></div>
   <script src="popup.js"></script>
 </body>
 </html> 

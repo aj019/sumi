@@ -25,7 +25,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 content: `Please summarize the following text:\n\n${request.text}`
               }
             ],
-            max_tokens: 150
+            max_tokens: 32768
           })
         });
 
@@ -34,6 +34,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (data.error) {
           sendResponse({ error: data.error.message });
         } else {
+            console.log(data.choices[0].message.content);
           sendResponse({ summary: data.choices[0].message.content });
         }
       } catch (error) {

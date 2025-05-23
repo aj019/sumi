@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Text Summarizer",
+  "name": "Sumi",
   "version": "1.0",
   "description": "Summarize selected text using OpenAI API",
   "permissions": [
