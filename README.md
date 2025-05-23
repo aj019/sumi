@@ -1,4 +1,4 @@
-#SUMI - Text Summarizer Chrome Extension
+# SUMI - Text Summarizer Chrome Extension
 
 This Chrome extension allows you to select any text on a webpage and summarize it using OpenAI's API. It provides a simple and modern UI for entering your OpenAI API key and viewing the generated summary.
 
