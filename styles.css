@@ -144,17 +144,6 @@ input[type="password"] {
   box-shadow: 0 1px 3px rgba(60,64,67,0.08);
 }
 
-.button-row {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-.button-row .primary-button,
-.button-row .secondary-button {
-  width: 100%;
-  margin-bottom: 0;
-}
-
 @media (max-width: 420px) {
   body { width: 100vw; }
 } 

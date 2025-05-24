@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const summarizeBtn = document.getElementById('summarizeBtn');
   const fixGrammarBtn = document.getElementById('fixGrammarBtn');
   const rephraseBtn = document.getElementById('rephraseBtn');
-  const buttonRow = document.querySelector('.button-row');
+  const buttonColumn = document.getElementById('buttonColumn');
   const summaryResultDiv = document.getElementById('summaryResult');
   const grammarResultDiv = document.getElementById('grammarResult');
   const rephraseResultDiv = document.getElementById('rephraseResult');
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         infoBox.style.display = 'none';
         selectedTextBox.style.display = 'block';
-        buttonRow.style.display = 'flex';
+        buttonColumn.style.display = 'block';
         selectedTextBox.textContent = response.text;
       }
     });
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function showInfoBox() {
     infoBox.style.display = 'block';
     selectedTextBox.style.display = 'none';
-    buttonRow.style.display = 'none';
+    buttonColumn.style.display = 'none';
     summaryResultDiv.style.display = 'none';
     grammarResultDiv.style.display = 'none';
     rephraseResultDiv.style.display = 'none';
