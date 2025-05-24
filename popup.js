@@ -10,9 +10,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const selectedTextBox = document.getElementById('selectedTextBox');
   const summarizeBtn = document.getElementById('summarizeBtn');
   const fixGrammarBtn = document.getElementById('fixGrammarBtn');
+  const rephraseBtn = document.getElementById('rephraseBtn');
   const buttonRow = document.querySelector('.button-row');
   const summaryResultDiv = document.getElementById('summaryResult');
   const grammarResultDiv = document.getElementById('grammarResult');
+  const rephraseResultDiv = document.getElementById('rephraseResult');
   const statusDiv = document.getElementById('status');
 
   // Navigation
@@ -66,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
     buttonRow.style.display = 'none';
     summaryResultDiv.style.display = 'none';
     grammarResultDiv.style.display = 'none';
+    rephraseResultDiv.style.display = 'none';
   }
 
   // Summarize button click handler
@@ -78,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     showStatus('Summarizing...', 'info');
     summaryResultDiv.style.display = 'none';
     grammarResultDiv.style.display = 'none';
+    rephraseResultDiv.style.display = 'none';
     chrome.runtime.sendMessage(
       { action: "summarize", text },
       (response) => {
@@ -103,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
     showStatus('Fixing grammar...', 'info');
     summaryResultDiv.style.display = 'none';
     grammarResultDiv.style.display = 'none';
+    rephraseResultDiv.style.display = 'none';
     chrome.runtime.sendMessage(
       { action: "fixGrammar", text },
       (response) => {
@@ -113,6 +118,32 @@ document.addEventListener('DOMContentLoaded', () => {
           showStatus('Grammar fixed!', 'success');
           grammarResultDiv.textContent = response.grammar;
           grammarResultDiv.style.display = 'block';
+        }
+      }
+    );
+  });
+
+  // Rephrase button click handler
+  rephraseBtn.addEventListener('click', () => {
+    const text = selectedTextBox.textContent;
+    if (!text) {
+      showStatus('Please select some text first', 'error');
+      return;
+    }
+    showStatus('Rephrasing...', 'info');
+    summaryResultDiv.style.display = 'none';
+    grammarResultDiv.style.display = 'none';
+    rephraseResultDiv.style.display = 'none';
+    chrome.runtime.sendMessage(
+      { action: "rephrase", text },
+      (response) => {
+        if (response.error) {
+          showStatus(response.error, 'error');
+          rephraseResultDiv.style.display = 'none';
+        } else {
+          showStatus('Text rephrased!', 'success');
+          rephraseResultDiv.textContent = response.rephrased;
+          rephraseResultDiv.style.display = 'block';
         }
       }
     );
