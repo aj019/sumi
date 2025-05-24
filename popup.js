@@ -9,7 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const infoBox = document.getElementById('infoBox');
   const selectedTextBox = document.getElementById('selectedTextBox');
   const summarizeBtn = document.getElementById('summarizeBtn');
+  const fixGrammarBtn = document.getElementById('fixGrammarBtn');
+  const buttonRow = document.querySelector('.button-row');
   const summaryResultDiv = document.getElementById('summaryResult');
+  const grammarResultDiv = document.getElementById('grammarResult');
   const statusDiv = document.getElementById('status');
 
   // Navigation
@@ -51,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         infoBox.style.display = 'none';
         selectedTextBox.style.display = 'block';
-        summarizeBtn.style.display = 'block';
+        buttonRow.style.display = 'flex';
         selectedTextBox.textContent = response.text;
       }
     });
@@ -60,8 +63,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function showInfoBox() {
     infoBox.style.display = 'block';
     selectedTextBox.style.display = 'none';
-    summarizeBtn.style.display = 'none';
+    buttonRow.style.display = 'none';
     summaryResultDiv.style.display = 'none';
+    grammarResultDiv.style.display = 'none';
   }
 
   // Summarize button click handler
@@ -73,6 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     showStatus('Summarizing...', 'info');
     summaryResultDiv.style.display = 'none';
+    grammarResultDiv.style.display = 'none';
     chrome.runtime.sendMessage(
       { action: "summarize", text },
       (response) => {
@@ -83,6 +88,31 @@ document.addEventListener('DOMContentLoaded', () => {
           showStatus('Summary generated!', 'success');
           summaryResultDiv.textContent = response.summary;
           summaryResultDiv.style.display = 'block';
+        }
+      }
+    );
+  });
+
+  // Fix Grammar button click handler
+  fixGrammarBtn.addEventListener('click', () => {
+    const text = selectedTextBox.textContent;
+    if (!text) {
+      showStatus('Please select some text first', 'error');
+      return;
+    }
+    showStatus('Fixing grammar...', 'info');
+    summaryResultDiv.style.display = 'none';
+    grammarResultDiv.style.display = 'none';
+    chrome.runtime.sendMessage(
+      { action: "fixGrammar", text },
+      (response) => {
+        if (response.error) {
+          showStatus(response.error, 'error');
+          grammarResultDiv.style.display = 'none';
+        } else {
+          showStatus('Grammar fixed!', 'success');
+          grammarResultDiv.textContent = response.grammar;
+          grammarResultDiv.style.display = 'block';
         }
       }
     );
