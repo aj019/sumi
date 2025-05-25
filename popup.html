@@ -21,9 +21,18 @@
       <button id="fixGrammarBtn" class="secondary-button">Fix Grammar</button>
       <button id="rephraseBtn" class="secondary-button">Rephrase</button>
     </div>
-    <div id="summaryResult" class="summary-result" style="display:none;"></div>
-    <div id="grammarResult" class="summary-result" style="display:none;"></div>
-    <div id="rephraseResult" class="summary-result" style="display:none;"></div>
+    <div id="summaryResult" class="summary-result" style="display:none;">
+      <span id="summaryText"></span>
+      <button class="copy-btn" id="copySummaryBtn" title="Copy"><i class="fa-regular fa-copy"></i></button>
+    </div>
+    <div id="grammarResult" class="summary-result" style="display:none;">
+      <span id="grammarText"></span>
+      <button class="copy-btn" id="copyGrammarBtn" title="Copy"><i class="fa-regular fa-copy"></i></button>
+    </div>
+    <div id="rephraseResult" class="summary-result" style="display:none;">
+      <span id="rephraseText"></span>
+      <button class="copy-btn" id="copyRephraseBtn" title="Copy"><i class="fa-regular fa-copy"></i></button>
+    </div>
   </div>
 
   <div id="settingsPage" class="settings-page" style="display:none;">

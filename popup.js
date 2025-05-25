@@ -15,6 +15,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const summaryResultDiv = document.getElementById('summaryResult');
   const grammarResultDiv = document.getElementById('grammarResult');
   const rephraseResultDiv = document.getElementById('rephraseResult');
+  const summaryText = document.getElementById('summaryText');
+  const grammarText = document.getElementById('grammarText');
+  const rephraseText = document.getElementById('rephraseText');
+  const copySummaryBtn = document.getElementById('copySummaryBtn');
+  const copyGrammarBtn = document.getElementById('copyGrammarBtn');
+  const copyRephraseBtn = document.getElementById('copyRephraseBtn');
   const statusDiv = document.getElementById('status');
 
   // Navigation
@@ -90,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
           summaryResultDiv.style.display = 'none';
         } else {
           showStatus('Summary generated!', 'success');
-          summaryResultDiv.textContent = response.summary;
+          summaryText.textContent = response.summary;
           summaryResultDiv.style.display = 'block';
         }
       }
@@ -116,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
           grammarResultDiv.style.display = 'none';
         } else {
           showStatus('Grammar fixed!', 'success');
-          grammarResultDiv.textContent = response.grammar;
+          grammarText.textContent = response.grammar;
           grammarResultDiv.style.display = 'block';
         }
       }
@@ -142,12 +148,30 @@ document.addEventListener('DOMContentLoaded', () => {
           rephraseResultDiv.style.display = 'none';
         } else {
           showStatus('Text rephrased!', 'success');
-          rephraseResultDiv.textContent = response.rephrased;
+          rephraseText.textContent = response.rephrased;
           rephraseResultDiv.style.display = 'block';
         }
       }
     );
   });
+
+  // Copy functionality
+  copySummaryBtn.addEventListener('click', () => {
+    copyToClipboard(summaryText.textContent);
+    showStatus('Copied!', 'success');
+  });
+  copyGrammarBtn.addEventListener('click', () => {
+    copyToClipboard(grammarText.textContent);
+    showStatus('Copied!', 'success');
+  });
+  copyRephraseBtn.addEventListener('click', () => {
+    copyToClipboard(rephraseText.textContent);
+    showStatus('Copied!', 'success');
+  });
+
+  function copyToClipboard(text) {
+    navigator.clipboard.writeText(text);
+  }
 
   function showStatus(message, type) {
     statusDiv.textContent = message;
