@@ -130,4 +130,36 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
     return true; // Required for async sendResponse
   }
+
+  if (request.action === "chat") {
+    chrome.storage.local.get(['apiKey'], async (result) => {
+      if (!result.apiKey) {
+        sendResponse({ error: "API key not found. Please set your OpenAI API key in the extension settings." });
+        return;
+      }
+      try {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${result.apiKey}`
+          },
+          body: JSON.stringify({
+            model: "gpt-4.1",
+            messages: request.messages,
+            max_tokens: 500
+          })
+        });
+        const data = await response.json();
+        if (data.error) {
+          sendResponse({ error: data.error.message });
+        } else {
+          sendResponse({ reply: data.choices[0].message.content });
+        }
+      } catch (error) {
+        sendResponse({ error: "Failed to connect to OpenAI API. Please check your internet connection." });
+      }
+    });
+    return true; // Required for async sendResponse
+  }
 }); 

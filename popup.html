@@ -8,9 +8,14 @@
 <body>
   <div class="top-bar">
     <span class="title">SUMI</span>
-    <button id="settingsBtn" class="icon-btn" title="Settings">
-      <i class="fa-solid fa-gear"></i>
-    </button>
+    <div>
+      <button id="chatBtn" class="icon-btn" title="Chat">
+        <i class="fa-regular fa-comments"></i>
+      </button>
+      <button id="settingsBtn" class="icon-btn" title="Settings">
+        <i class="fa-solid fa-gear"></i>
+      </button>
+    </div>
   </div>
 
   <div id="homePage">
@@ -45,7 +50,20 @@
     <button id="backBtn" class="secondary-button">Back</button>
   </div>
 
+  <div id="chatPage" class="chat-page" style="display:none;">
+    <div id="chatHistory" class="chat-history"></div>
+    <div class="chat-input-row">
+      <input type="text" id="chatInput" placeholder="Type your message..." autocomplete="off" />
+      <button id="sendChatBtn" class="primary-button"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+    <div class="chat-actions-row">
+      <button id="chatBackBtn" class="secondary-button">Back</button>
+      <button id="clearChatBtn" class="secondary-button">Clear Chat</button>
+    </div>
+  </div>
+
   <div id="status" class="status"></div>
+  <script src="js/marked.min.js"></script>
   <script src="popup.js"></script>
 </body>
 </html> 

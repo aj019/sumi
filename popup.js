@@ -1,9 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
   // Elements
   const settingsBtn = document.getElementById('settingsBtn');
+  const chatBtn = document.getElementById('chatBtn');
   const homePage = document.getElementById('homePage');
   const settingsPage = document.getElementById('settingsPage');
+  const chatPage = document.getElementById('chatPage');
   const backBtn = document.getElementById('backBtn');
+  const chatBackBtn = document.getElementById('chatBackBtn');
   const apiKeyInput = document.getElementById('apiKey');
   const saveApiKeyBtn = document.getElementById('saveApiKey');
   const infoBox = document.getElementById('infoBox');
@@ -22,10 +25,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const copyGrammarBtn = document.getElementById('copyGrammarBtn');
   const copyRephraseBtn = document.getElementById('copyRephraseBtn');
   const statusDiv = document.getElementById('status');
+  // Chat elements
+  const chatHistoryDiv = document.getElementById('chatHistory');
+  const chatInput = document.getElementById('chatInput');
+  const sendChatBtn = document.getElementById('sendChatBtn');
+  const clearChatBtn = document.getElementById('clearChatBtn');
 
   // Navigation
   settingsBtn.addEventListener('click', () => {
     homePage.style.display = 'none';
+    chatPage.style.display = 'none';
     settingsPage.style.display = 'block';
     statusDiv.textContent = '';
     chrome.storage.local.get(['apiKey'], (result) => {
@@ -34,6 +43,19 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   backBtn.addEventListener('click', () => {
     settingsPage.style.display = 'none';
+    homePage.style.display = 'block';
+    statusDiv.textContent = '';
+  });
+  chatBtn.addEventListener('click', () => {
+    homePage.style.display = 'none';
+    settingsPage.style.display = 'none';
+    chatPage.style.display = 'flex';
+    statusDiv.textContent = '';
+    renderChatHistory();
+    chatInput.focus();
+  });
+  chatBackBtn.addEventListener('click', () => {
+    chatPage.style.display = 'none';
     homePage.style.display = 'block';
     statusDiv.textContent = '';
   });
@@ -96,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
           summaryResultDiv.style.display = 'none';
         } else {
           showStatus('Summary generated!', 'success');
-          summaryText.textContent = response.summary;
+          summaryText.innerHTML = marked.parse(response.summary);
           summaryResultDiv.style.display = 'block';
         }
       }
@@ -122,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
           grammarResultDiv.style.display = 'none';
         } else {
           showStatus('Grammar fixed!', 'success');
-          grammarText.textContent = response.grammar;
+          grammarText.innerHTML = marked.parse(response.grammar);
           grammarResultDiv.style.display = 'block';
         }
       }
@@ -148,12 +170,60 @@ document.addEventListener('DOMContentLoaded', () => {
           rephraseResultDiv.style.display = 'none';
         } else {
           showStatus('Text rephrased!', 'success');
-          rephraseText.textContent = response.rephrased;
+          rephraseText.innerHTML = marked.parse(response.rephrased);
           rephraseResultDiv.style.display = 'block';
         }
       }
     );
   });
+
+  // Chat logic
+  let chatHistory = [];
+
+  sendChatBtn.addEventListener('click', sendChatMessage);
+  chatInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      sendChatMessage();
+    }
+  });
+
+  function sendChatMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+    chatInput.value = '';
+    chatHistory.push({ role: 'user', content: message });
+    renderChatHistory();
+    chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
+    showStatus('Waiting for AI...', 'info');
+    chrome.runtime.sendMessage(
+      { action: 'chat', messages: chatHistory },
+      (response) => {
+        if (response && response.reply) {
+          chatHistory.push({ role: 'assistant', content: response.reply });
+          renderChatHistory();
+          chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
+        } else if (response && response.error) {
+          showStatus(response.error, 'error');
+        } else {
+          showStatus('No response from AI.', 'error');
+        }
+      }
+    );
+  }
+
+  function renderChatHistory() {
+    chatHistoryDiv.innerHTML = '';
+    chatHistory.forEach(msg => {
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble ' + (msg.role === 'user' ? 'user' : 'ai');
+      if (msg.role === 'assistant') {
+        bubble.innerHTML = marked.parse(msg.content);
+      } else {
+        bubble.textContent = msg.content;
+      }
+      chatHistoryDiv.appendChild(bubble);
+    });
+  }
 
   // Copy functionality
   copySummaryBtn.addEventListener('click', () => {
@@ -183,4 +253,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 2000);
     }
   }
+
+  clearChatBtn.addEventListener('click', () => {
+    chatHistory = [];
+    renderChatHistory();
+    showStatus('Chat cleared!', 'success');
+  });
 }); 
