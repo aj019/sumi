@@ -30,6 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const chatInput = document.getElementById('chatInput');
   const sendChatBtn = document.getElementById('sendChatBtn');
   const clearChatBtn = document.getElementById('clearChatBtn');
+  const twitterThreadBtn = document.getElementById('twitterThreadBtn');
+  const twitterThreadResultDiv = document.getElementById('twitterThreadResult');
+  const twitterThreadText = document.getElementById('twitterThreadText');
+  const copyTwitterThreadBtn = document.getElementById('copyTwitterThreadBtn');
 
   // Navigation
   settingsBtn.addEventListener('click', () => {
@@ -258,5 +262,36 @@ document.addEventListener('DOMContentLoaded', () => {
     chatHistory = [];
     renderChatHistory();
     showStatus('Chat cleared!', 'success');
+  });
+
+  twitterThreadBtn.addEventListener('click', () => {
+    const text = selectedTextBox.textContent;
+    if (!text) {
+      showStatus('Please select some text first', 'error');
+      return;
+    }
+    showStatus('Generating Twitter thread...', 'info');
+    summaryResultDiv.style.display = 'none';
+    grammarResultDiv.style.display = 'none';
+    rephraseResultDiv.style.display = 'none';
+    twitterThreadResultDiv.style.display = 'none';
+    chrome.runtime.sendMessage(
+      { action: "twitterThread", text },
+      (response) => {
+        if (response.error) {
+          showStatus(response.error, 'error');
+          twitterThreadResultDiv.style.display = 'none';
+        } else {
+          showStatus('Thread generated!', 'success');
+          twitterThreadText.innerHTML = marked.parse(response.thread);
+          twitterThreadResultDiv.style.display = 'block';
+        }
+      }
+    );
+  });
+
+  copyTwitterThreadBtn.addEventListener('click', () => {
+    copyToClipboard(twitterThreadText.textContent);
+    showStatus('Copied!', 'success');
   });
 }); 

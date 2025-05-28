@@ -162,4 +162,45 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
     return true; // Required for async sendResponse
   }
+
+  if (request.action === "twitterThread") {
+    chrome.storage.local.get(['apiKey'], async (result) => {
+      if (!result.apiKey) {
+        sendResponse({ error: "API key not found. Please set your OpenAI API key in the extension settings." });
+        return;
+      }
+      try {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${result.apiKey}`
+          },
+          body: JSON.stringify({
+            model: "gpt-4.1",
+            messages: [
+              {
+                role: "system",
+                content: "You are a professional copywriter and would like to convert your text into an engaging Twitter thread.   Do not self reference. Do not explain what you are doing. Add emojis to the thread when appropriate. The character count for each thread should be between 270 to 280 characters. Please add relevant hashtags to the post and encourage the Twitter users to join the conversation. "
+              },
+              {
+                role: "user",
+                content: `Convert the following text into a summarized, engaging Twitter thread. Each tweet should be concise, engaging, and formatted as a bullet or number.\n\n${request.text}`
+              }
+            ],
+            max_tokens: 5000
+          })
+        });
+        const data = await response.json();
+        if (data.error) {
+          sendResponse({ error: data.error.message });
+        } else {
+          sendResponse({ thread: data.choices[0].message.content });
+        }
+      } catch (error) {
+        sendResponse({ error: "Failed to connect to OpenAI API. Please check your internet connection." });
+      }
+    });
+    return true; // Required for async sendResponse
+  }
 }); 
