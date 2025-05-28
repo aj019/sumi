@@ -1,12 +1,11 @@
 {
   "manifest_version": 3,
   "name": "Sumi",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Summarize selected text using OpenAI API",
   "permissions": [
     "storage",
-    "activeTab",
-    "scripting"
+    "activeTab"
   ],
   "action": {
     "default_popup": "popup.html",
