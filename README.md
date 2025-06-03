@@ -1,5 +1,8 @@
 # SUMI - Text Summarizer Chrome Extension
 
+Update - June 3rd 2025 
+The extension is now live on the chrome store . Link :- https://chromewebstore.google.com/detail/namcaloggglenlhmkjmiaibdkdjnejgm
+
 This Chrome extension allows you to select any text on a webpage and:
 - Summarize it
 - Fix its grammar
