@@ -336,14 +336,16 @@ input[type="password"] {
 
 .custom-prompt-section {
     margin: 15px 0;
-    padding: 10px;
+    padding: 0;
     background-color: #f8f9fa;
     border-radius: 8px;
+    width: 100%;
 }
 
 .input-group {
     display: flex;
     gap: 8px;
+    width: 100%;
 }
 
 .custom-prompt-input {
@@ -358,4 +360,9 @@ input[type="password"] {
     outline: none;
     border-color: #4a90e2;
     box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+#customPromptBtn {
+    white-space: nowrap;
+    min-width: fit-content;
 } 
