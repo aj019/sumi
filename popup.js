@@ -34,6 +34,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const twitterThreadResultDiv = document.getElementById('twitterThreadResult');
   const twitterThreadText = document.getElementById('twitterThreadText');
   const copyTwitterThreadBtn = document.getElementById('copyTwitterThreadBtn');
+  const grammarBtn = document.getElementById('grammarBtn');
+  const threadBtn = document.getElementById('threadBtn');
+  const customPromptBtn = document.getElementById('customPromptBtn');
+  const customPromptInput = document.getElementById('customPromptInput');
+  const resultDiv = document.getElementById('result');
 
   // Navigation
   settingsBtn.addEventListener('click', () => {
@@ -103,82 +108,83 @@ document.addEventListener('DOMContentLoaded', () => {
     rephraseResultDiv.style.display = 'none';
   }
 
-  // Summarize button click handler
-  summarizeBtn.addEventListener('click', () => {
+  // Function to process text with a given action
+  function processText(action, customPrompt = null) {
     const text = selectedTextBox.textContent;
     if (!text) {
       showStatus('Please select some text first', 'error');
       return;
     }
-    showStatus('Summarizing...', 'info');
+
+    // Show loading state
+    showStatus('Processing...', 'info');
+    
+    // Hide all result divs
     summaryResultDiv.style.display = 'none';
     grammarResultDiv.style.display = 'none';
     rephraseResultDiv.style.display = 'none';
-    chrome.runtime.sendMessage(
-      { action: "summarize", text },
-      (response) => {
-        if (response.error) {
-          showStatus(response.error, 'error');
-          summaryResultDiv.style.display = 'none';
-        } else {
-          showStatus('Summary generated!', 'success');
+    twitterThreadResultDiv.style.display = 'none';
+    resultDiv.style.display = 'none';
+
+    chrome.runtime.sendMessage({
+      action: "processText",
+      text: text,
+      actionType: action,
+      customPrompt: customPrompt
+    }, function(response) {
+      if (response.error) {
+        showStatus(response.error, 'error');
+      } else {
+        showStatus('Done!', 'success');
+        
+        // Show result in the appropriate div
+        if (action === 'summarize') {
           summaryText.innerHTML = marked.parse(response.summary);
           summaryResultDiv.style.display = 'block';
-        }
-      }
-    );
-  });
-
-  // Fix Grammar button click handler
-  fixGrammarBtn.addEventListener('click', () => {
-    const text = selectedTextBox.textContent;
-    if (!text) {
-      showStatus('Please select some text first', 'error');
-      return;
-    }
-    showStatus('Fixing grammar...', 'info');
-    summaryResultDiv.style.display = 'none';
-    grammarResultDiv.style.display = 'none';
-    rephraseResultDiv.style.display = 'none';
-    chrome.runtime.sendMessage(
-      { action: "fixGrammar", text },
-      (response) => {
-        if (response.error) {
-          showStatus(response.error, 'error');
-          grammarResultDiv.style.display = 'none';
-        } else {
-          showStatus('Grammar fixed!', 'success');
-          grammarText.innerHTML = marked.parse(response.grammar);
+        } else if (action === 'grammar') {
+          grammarText.innerHTML = marked.parse(response.summary);
           grammarResultDiv.style.display = 'block';
+        } else if (action === 'rephrase') {
+          rephraseText.innerHTML = marked.parse(response.summary);
+          rephraseResultDiv.style.display = 'block';
+        } else if (action === 'thread') {
+          twitterThreadText.innerHTML = marked.parse(response.summary);
+          twitterThreadResultDiv.style.display = 'block';
+        } else {
+          // For custom prompts and other actions
+          document.getElementById('resultText').innerHTML = marked.parse(response.summary);
+          resultDiv.style.display = 'block';
         }
       }
-    );
+    });
+  }
+
+  // Event listeners for buttons
+  summarizeBtn.addEventListener('click', () => processText('summarize'));
+  grammarBtn.addEventListener('click', () => processText('grammar'));
+  rephraseBtn.addEventListener('click', () => processText('rephrase'));
+  threadBtn.addEventListener('click', () => processText('thread'));
+  
+  customPromptBtn.addEventListener('click', () => {
+    const prompt = customPromptInput.value.trim();
+    if (prompt) {
+      processText('custom', prompt);
+    } else {
+      showStatus('Please enter a custom prompt', 'error');
+    }
   });
 
-  // Rephrase button click handler
-  rephraseBtn.addEventListener('click', () => {
-    const text = selectedTextBox.textContent;
-    if (!text) {
-      showStatus('Please select some text first', 'error');
-      return;
+  // Allow Enter key to trigger custom prompt
+  customPromptInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      customPromptBtn.click();
     }
-    showStatus('Rephrasing...', 'info');
-    summaryResultDiv.style.display = 'none';
-    grammarResultDiv.style.display = 'none';
-    rephraseResultDiv.style.display = 'none';
-    chrome.runtime.sendMessage(
-      { action: "rephrase", text },
-      (response) => {
-        if (response.error) {
-          showStatus(response.error, 'error');
-          rephraseResultDiv.style.display = 'none';
-        } else {
-          showStatus('Text rephrased!', 'success');
-          rephraseText.innerHTML = marked.parse(response.rephrased);
-          rephraseResultDiv.style.display = 'block';
-        }
-      }
-    );
+  });
+
+  // Add copy button functionality for the result div
+  document.getElementById('copyResultBtn').addEventListener('click', () => {
+    copyToClipboard(document.getElementById('resultText').textContent);
+    showStatus('Copied!', 'success');
   });
 
   // Chat logic

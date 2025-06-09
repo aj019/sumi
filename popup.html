@@ -22,10 +22,29 @@
     <div class="info-box" id="infoBox">Select text on any webpage and click the extension icon to summarize it.</div>
     <div id="selectedTextBox" class="selected-text-box" style="display:none;"></div>
     <div id="buttonColumn" style="display:none;">
-      <button id="summarizeBtn" class="primary-button">Summarize</button>
-      <button id="fixGrammarBtn" class="secondary-button">Fix Grammar</button>
-      <button id="rephraseBtn" class="secondary-button">Rephrase</button>
-      <button id="twitterThreadBtn" class="secondary-button">Generate Twitter Thread</button>
+      <div class="action-buttons">
+        <button id="summarizeBtn" class="action-btn">
+          <i class="fas fa-file-alt"></i> Summarize
+        </button>
+        <button id="grammarBtn" class="action-btn">
+          <i class="fas fa-spell-check"></i> Fix Grammar
+        </button>
+        <button id="rephraseBtn" class="action-btn">
+          <i class="fas fa-sync-alt"></i> Rephrase
+        </button>
+        <button id="threadBtn" class="action-btn">
+          <i class="fab fa-twitter"></i> Twitter Thread
+        </button>
+      </div>
+
+      <div class="custom-prompt-section">
+        <div class="input-group">
+          <input type="text" id="customPromptInput" placeholder="Enter your custom prompt..." class="custom-prompt-input">
+          <button id="customPromptBtn" class="action-btn">
+            <i class="fas fa-magic"></i> Custom Prompt
+          </button>
+        </div>
+      </div>
     </div>
     <div id="summaryResult" class="summary-result" style="display:none;">
       <span id="summaryText"></span>
@@ -42,6 +61,10 @@
     <div id="twitterThreadResult" class="summary-result" style="display:none;">
       <span id="twitterThreadText"></span>
       <button class="copy-btn" id="copyTwitterThreadBtn" title="Copy"><i class="fa-regular fa-copy"></i></button>
+    </div>
+    <div id="result" class="summary-result" style="display:none;">
+      <span id="resultText"></span>
+      <button class="copy-btn" id="copyResultBtn" title="Copy"><i class="fa-regular fa-copy"></i></button>
     </div>
   </div>
 
